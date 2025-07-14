@@ -1,0 +1,226 @@
+import React, { useState, useCallback } from "react";
+import logo from "../Images/logo.png";
+import { CiSearch } from "react-icons/ci";
+import { FaRegUserCircle } from "react-icons/fa";
+import { RiArrowDropDownLine } from "react-icons/ri";
+import { CiCircleRemove } from "react-icons/ci";
+import { MdMyLocation } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { TiShoppingCart } from "react-icons/ti";
+import { useNavigate } from "react-router";
+import SearchBox from "./SearchBox";
+import { useSelector } from "react-redux";
+import { MdOutlineArrowDropDown } from "react-icons/md";
+import { IoMdArrowDropup } from "react-icons/io";
+import UserProfile from "./UserProfile";
+import AdminProfile from "./admin/AdminProfile";
+
+function Nav() {
+  const [location, setLocation] = useState(false);
+  const [userProfile, setUserProfile] = useState(false);
+  const [locationData, setLocationData] = useState(null);
+  const [loadingLocation, setLoadingLocation] = useState(false);
+  
+  const navigate = useNavigate();
+  const user = useSelector((state) => state?.user);
+  
+  // API key should be in environment variables
+  const apiEndPoint = 'https://api.opencagedata.com/geocode/v1/json';
+  const apiKey =  'b5a4b8f5f9494d33bf2fb76e5906a6db';
+
+  const getUserCurrentLocation = useCallback(async (latitude, longitude) => {
+    try {
+      setLoadingLocation(true);
+      const query = `${latitude}%2C+${longitude}`;
+      const response = await fetch(`${apiEndPoint}?q=${query}&key=${apiKey}&pretty=1`);
+      const data = await response.json();
+      
+      if (data.results && data.results.length > 0) {
+        setLocationData(data.results[0]);
+        // You might want to store this in Redux or context for app-wide access
+        console.log("Location data:", data.results[0]);
+      }
+    } catch (error) {
+      console.error("Error fetching location:", error);
+      // Consider adding user feedback here (e.g., toast notification)
+    } finally {
+      setLoadingLocation(false);
+    }
+  }, [apiEndPoint, apiKey]);
+
+  const handleCurrentLocation = useCallback(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          getUserCurrentLocation(latitude, longitude);
+        },
+        (error) => {
+          console.error("Location Error:", error);
+          // Provide user feedback about location access failure
+        }
+      );
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+      // Provide user feedback about lack of geolocation support
+    }
+  }, [getUserCurrentLocation]);
+
+  const toggleUserProfile = useCallback(() => {
+    setUserProfile(prev => !prev);
+  }, []);
+
+  const closeLocationModal = useCallback(() => {
+    setLocation(false);
+    setLocationData(null);
+  }, []);
+
+  return (
+    <>
+      <div className="bg-gradient-to-b from-[#e2caf2f9] to-[#fff] w-full h-[120px] lg:h-[80px] pt-5">
+        <div className="lg:w-[90%] w-[90%] h-[60px] flex items-center justify-between gap-[20px] m-auto">
+          <div className="w-[180px] h-full cursor-pointer flex justify-center items-center">
+            <Link to="/">
+              <img src={logo} alt="Company Logo" className="w-[180px] h-[30px]" />
+            </Link>
+          </div>
+          
+          <div>
+            <button className="w-full" aria-label="Super saver toggle">
+              <div className="h-[44px] rounded-full border border-gray-200 py-1 px-[5px] w-[120px] md:flex hidden">
+                <div className="relative flex h-full w-full cursor-pointer items-center rounded-full p-0.5 transition-all bg-slate-300">
+                  <div className="h-8 w-8 rounded-full shadow-md transition-transform duration-[0.5s] ease-in-out translate-x-0 bg-white" />
+                  <img
+                    alt="super-saver"
+                    loading="lazy"
+                    width={44}
+                    height={26}
+                    decoding="async"
+                    className="relative overflow-hidden h-[26px] w-11 left-5"
+                    src="https://www.zeptonow.com/images/super-saver/super-saver-inactive.svg"
+                    style={{ color: "transparent", objectFit: "contain" }}
+                  />
+                </div>
+              </div>
+            </button>
+          </div>
+
+          {/* Location Section */}
+          <div
+            className="w-[260px] h-full items-center justify-between cursor-pointer hidden md:flex"
+            onClick={() => setLocation(true)}
+            aria-label="Select location"
+          >
+            <h2>Select Location</h2>
+            <RiArrowDropDownLine size={22} />
+          </div>
+
+          {/* Search section */}
+          <div className="md:flex w-full hidden">
+            <SearchBox />
+          </div>
+
+          {/* User profile or login section */}
+          {user._id ? (
+            <div className="min-w-[40px] md:min-w-[100px] min-h-[40px] relative flex items-center justify-center cursor-pointer">
+              <div onClick={toggleUserProfile} className="flex items-center gap-1">
+                <h2 className="text-[16px] font-[400]">Account</h2>
+                {!userProfile ? <MdOutlineArrowDropDown size={22} /> : <IoMdArrowDropup size={22} />}
+              </div>
+              {userProfile && (
+                <div className="absolute top-23 right-0 md:top-12 md:right-[-20px] bg-white w-[90vw] md:w-[300px] min-h-[200px] z-20 shadow-2xl rounded-lg flex justify-center items-center py-3">
+                  {user.role === "ADMIN" ? <AdminProfile /> : <UserProfile />}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div>
+              <Link
+                to="/login"
+                className="flex flex-col justify-center items-center cursor-pointer"
+                aria-label="Login"
+              >
+                <FaRegUserCircle className="w-[20px] h-[20px]" />
+                <p>Login</p>
+              </Link>
+            </div>
+          )}
+
+          {/* Cart section */}
+          <div 
+            className="justify-center items-center gap-2 cursor-pointer md:flex hidden w-[150px] bg-[#6f22fe] text-white p-2 rounded-md relative"
+            onClick={() => navigate('/cart')}
+            aria-label="Shopping cart"
+          >
+            <TiShoppingCart size={30} className="animate-bounce" />
+            <p>Cart</p>
+          </div>
+        </div>
+        <div className="md:hidden w-[95%] h-[40px] m-auto">
+          <SearchBox />
+        </div>
+      </div>
+
+      {/* Location card section */}
+      {location && (
+        <div className="fixed inset-0 bg-[#00000075] flex items-center justify-center z-50">
+          <div className="h-[400px] w-full md:w-[600px] shadow-2xl flex flex-col items-center gap-2 py-[20px] px-[20px] bg-white rounded-lg relative">
+            <CiCircleRemove
+              className="absolute top-[10px] right-[20px] w-[20px] h-[20px] cursor-pointer"
+              onClick={closeLocationModal}
+              aria-label="Close location modal"
+            />
+            <div className="border-b-2 border-b-gray-200 py-1 w-full">
+              <h1 className="text-[16px] font-bold tracking-[2px] text-center">
+                Your Location
+              </h1>
+            </div>
+            <div className="flex gap-3 px-[20px] py-[10px] w-[100%] rounded-lg bg-gray-200 items-center">
+              <CiSearch className="w-[20px] h-[20px] font-bold" />
+              <input
+                type="text"
+                placeholder="Search A New Location"
+                className="w-full outline-0 border-0 placeholder:text-gray-500 placeholder:text-[12px] placeholder:tracking-[1px]"
+                aria-label="Search location input"
+              />
+            </div>
+            
+            {loadingLocation ? (
+              <div className="flex justify-center items-center h-20">
+                <p>Loading location...</p>
+              </div>
+            ) : locationData ? (
+              <div className="mt-4 p-4 bg-gray-100 rounded-lg w-full">
+                <h3 className="font-bold">Detected Location:</h3>
+                <p>{locationData.formatted}</p>
+              </div>
+            ) : (
+              <div className="flex items-center justify-start gap-[20px] w-full mt-[20px]">
+                <div>
+                  <MdMyLocation className="text-red-500 w-[20px] h-[20px]" />
+                </div>
+                <div>
+                  <h1 className="text-red-500 font-bold">Current Location</h1>
+                  <p className="text-[14px] text-gray-500 font-semibold">
+                    Enable your current location for better services
+                  </p>
+                </div>
+                <div>
+                  <button 
+                    className="border-2 border-gray-400 text-red-500 py-1 px-3 cursor-pointer rounded-md hover:bg-red-50 transition-colors"
+                    onClick={handleCurrentLocation}
+                    disabled={loadingLocation}
+                  >
+                    {loadingLocation ? 'Detecting...' : 'Enable'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+export default React.memo(Nav);

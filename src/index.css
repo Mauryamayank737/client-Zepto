@@ -1,0 +1,88 @@
+@import "tailwindcss";
+* {
+  box-sizing: border-box;
+ 
+}
+
+
+/* ul li {
+  min-width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  transition: 0.5s ease-in-out;
+
+  padding: 10px 0px;
+  font-size: 16px;
+  text-transform: capitalize;
+  color: gray;
+  letter-spacing: 0.9px;
+  cursor: pointer;
+} */
+/* 
+svg {
+  width: 20px;
+  height: 20px;
+  background: #000;
+} */
+.footer-company-link svg {
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+.footer-company-link svg:hover {
+  color: rgb(53, 52, 52);
+}
+
+/* ul li:hover {
+  color: #7d03ff;
+  border-bottom: 2px solid #7d03ff;
+} */
+
+h1 {
+  font-size: 20px;
+  font-weight: 600;
+  /* text-transform: capitalize; */
+}
+
+ol li {
+  font-size: 13px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  text-transform: capitalize;
+  width: 25%;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 1px;
+  padding: 5px;
+}
+.fooler-page-links li {
+  width: 100%;
+}
+ .slick-slider .slick-prev::before,
+ .slick-slider .slick-next::before{
+ color :rgb(90, 90, 90);
+ font-size: 25px;
+
+}
+
+@media (max-width: 768px) {
+  ol li {
+    width: 33%;
+  }
+}
+
+@media (max-width: 600px) {
+  ol li {
+    width: 50%;
+    font-weight: 500;
+  }
+}
+
+@media (max-width: 380px) {
+  ol li {
+    width: 100%;
+  }
+}
