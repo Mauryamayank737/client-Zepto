@@ -156,49 +156,58 @@ const ProductDisplayPage = () => {
               </div>
             </div>
             {/* add features */}
-          <div className="flex gap-4 border-t border-gray-300 p-4">
-            <div className="w-25 p-4 bg-gray-100 rounded-xl flex flex-col justify-center items-center gap-1 ">
-              <img src={noReturnIcon} alt="" className="w-10 h-10" />
-              <p className="w-full text-center text-[11px]">
-                No Returen Or Exchange
-              </p>
-            </div>
+            <div className="flex gap-4 border-t border-gray-300 p-4">
+              <div className="w-25 p-4 bg-gray-100 rounded-xl flex flex-col justify-center items-center gap-1 ">
+                <img src={noReturnIcon} alt="" className="w-10 h-10" />
+                <p className="w-full text-center text-[11px]">
+                  No Returen Or Exchange
+                </p>
+              </div>
 
-            <div className=" p-4 bg-gray-100 rounded-xl flex flex-col justify-center items-center gap-1">
-              <img src={FastDelivery} alt="" className="w-10 h-10" />
-              <p className="w-full text-center text-[11px]">
-                Fast Delivery
-              </p>
+              <div className=" p-4 bg-gray-100 rounded-xl flex flex-col justify-center items-center gap-1">
+                <img src={FastDelivery} alt="" className="w-10 h-10" />
+                <p className="w-full text-center text-[11px]">Fast Delivery</p>
+              </div>
             </div>
           </div>
-          </div>
-
-          
 
           {/* Product buy and add button */}
-          <div className="flex justify-between gap-4 sticky bottom-0 bg-white p-4 shadow-md">
-            <button
-              className="w-full py-3 bg-purple-500 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
-              onClick={() => console.log("Buy Now clicked")}
-            >
-              Buy Now
-            </button>
+          <div>
+            {productData.stock == 0 ? (
+              <div className="flex justify-between gap-4 sticky bottom-0 bg-white p-4 shadow-md">
+                <button className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors capitalize">
+                  out of Stock
+                </button>
+                <button
+                  className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+                  onClick={() => console.log("Add to Cart clicked")}
+                >
+                  Add to Cart
+                </button>
+              </div>
+            ) : (
+              <div className="flex justify-between gap-4 sticky bottom-0 bg-white p-4 shadow-md">
+                <button
+                  className="w-full py-3 bg-purple-500 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+                  onClick={() => console.log("Buy Now clicked")}
+                >
+                  Buy Now
+                </button>
 
-            <button
-              className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
-              onClick={() => console.log("Add to Cart clicked")}
-            >
-              Add to Cart
-            </button>
+                <button
+                  className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+                  onClick={() => console.log("Add to Cart clicked")}
+                >
+                  Add to Cart
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Related/Other Products */}
-    
 
-
-      
       {otherRelatedProducts.length > 0 && (
         <div className="w-[90%] lg:w-[80%] m-auto mt-8">
           <h2 className="text-xl font-semibold mb-4 text-gray-800">
@@ -207,10 +216,10 @@ const ProductDisplayPage = () => {
           <div className="flex gap-3 justify-center lg:justify-start flex-wrap">
             {loading ? (
               <div className="flex gap-2 lg:gap-4  lg:pb-4">
-            {[...Array(6)].map((_, index) => (
-              <LoadingCard key={index} />
-            ))}
-          </div>
+                {[...Array(6)].map((_, index) => (
+                  <LoadingCard key={index} />
+                ))}
+              </div>
             ) : (
               otherRelatedProducts
                 .filter((p) => p._id !== id)
@@ -231,10 +240,10 @@ const ProductDisplayPage = () => {
           <div className="flex gap-3 justify-center lg:justify-start flex-wrap">
             {loading ? (
               <div className="flex gap-2 lg:gap-4  lg:pb-4">
-            {[...Array(6)].map((_, index) => (
-              <LoadingCard key={index} />
-            ))}
-          </div>
+                {[...Array(6)].map((_, index) => (
+                  <LoadingCard key={index} />
+                ))}
+              </div>
             ) : (
               otherProducts
                 .filter((p) => p._id !== id)
