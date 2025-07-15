@@ -77,7 +77,7 @@ function Nav() {
 
   return (
     <>
-      <div className="bg-gradient-to-b from-[#e2caf2f9] to-[#fff] w-full h-[120px] lg:h-[80px] pt-5 sticky top-0 z-60">
+      <div className="bg-gradient-to-b from-[#e2caf2f9] to-[#fff] w-full h-[120px] lg:h-[80px] pt-5 sticky top-0 z-20">
         <div className="lg:w-[90%] w-[90%] h-[60px] flex items-center justify-between gap-[20px] m-auto">
           <div className="w-[180px] h-full cursor-pointer flex justify-center items-center">
             <Link to="/">
