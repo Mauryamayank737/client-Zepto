@@ -10,7 +10,7 @@ import AllSubCategory from '../assets/images.png'
 import NoData from './admin/NoData';
 
 const ProductPage = () => {
-    const {categoryid} = useParams()
+    const {categoryid ,categoryName} = useParams()
     const [subcategory, setSubcategory] = useState([])
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(false)
@@ -41,7 +41,7 @@ const ProductPage = () => {
             })
             setProducts(result.data.data)
             setError(null)
-            // navigate(`/${encodeURIComponent(categoryid)}/${encodeURIComponent(categoryName)}/All`)
+            navigate(`/${encodeURIComponent(categoryid)}/${encodeURIComponent(categoryName)}/All`)
         } catch (error) {
             console.error("Failed to fetch products:", error)
             setError("Failed to load products")
@@ -61,6 +61,10 @@ const ProductPage = () => {
             })
             setProducts(result.data.data)
             setError(null)
+            console.log("categoryid", categoryid)
+            console.log("categoryName", categoryName)
+            console.log("id", id)
+            navigate(`/${encodeURIComponent(categoryid)}/${encodeURIComponent(categoryName)}/${encodeURIComponent(name)}`)
             
         } catch (error) {
             console.error("Failed to fetch subcategory products:", error)

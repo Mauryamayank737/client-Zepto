@@ -65,7 +65,7 @@ const CategoryWiseProductDisplay = ({ categoryData }) => {
       <div className="flex justify-between py-5 font-semibold text-lg">
         <h3>{categoryData?.name || "Category"}</h3>
         <Link
-          to={`/${categoryData?._id}/${categoryData?.name}`}
+          to={`/${categoryData?._id}/${categoryData?.name}/all`}
           className="text-purple-600 hover:text-purple-800"
         >
           See All

@@ -156,16 +156,16 @@ const ProductDisplayPage = () => {
             </div>
             {/* add features */}
           <div className="flex gap-4 border-t border-gray-300 p-4">
-            <div className="w-25 p-4 bg-gray-100 rounded-xl ">
-              <img src={noReturnIcon} alt="" className="w-15 h-15" />
-              <p className="w-full text-center text-[10px]">
+            <div className="w-25 p-4 bg-gray-100 rounded-xl flex flex-col justify-center items-center gap-1 ">
+              <img src={noReturnIcon} alt="" className="w-10 h-10" />
+              <p className="w-full text-center text-[11px]">
                 No Returen Or Exchange
               </p>
             </div>
 
-            <div className=" p-4 bg-gray-100 rounded-xl">
-              <img src={FastDelivery} alt="" className="w-15 h-15" />
-              <p className="w-full text-center text-[10px]">
+            <div className=" p-4 bg-gray-100 rounded-xl flex flex-col justify-center items-center gap-1">
+              <img src={FastDelivery} alt="" className="w-10 h-10" />
+              <p className="w-full text-center text-[11px]">
                 Fast Delivery
               </p>
             </div>
@@ -199,7 +199,7 @@ const ProductDisplayPage = () => {
           <h2 className="text-xl font-semibold mb-4 text-gray-800">
             More Products in This Category
           </h2>
-          <div className="flex gap-3 flex-wrap">
+          <div className="flex gap-3 justify-center lg:justify-start flex-wrap">
             {loading ? (
               <p>Loading...</p>
             ) : (
@@ -219,7 +219,7 @@ const ProductDisplayPage = () => {
           <h2 className="text-xl font-semibold mb-4 text-gray-800">
             Other Products You Might Like
           </h2>
-          <div className="flex gap-3 flex-wrap">
+          <div className="flex gap-3 justify-center lg:justify-start flex-wrap">
             {loading ? (
               <p>Loading...</p>
             ) : (

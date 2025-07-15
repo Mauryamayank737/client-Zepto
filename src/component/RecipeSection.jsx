@@ -80,6 +80,7 @@ const RecipeSection = (props) => {
                   alt=""
                   className="w-[90%] h-full m-auto  rounded-xl  "
                 />
+              
                 {d.productType == "veg" ? (
                   <div className="absolute bottom-[10px] left-[30px] flex gap-2 items-center font-semibold text-[16px] capitalize ">
                     <FaLeaf className="text-green-600" />

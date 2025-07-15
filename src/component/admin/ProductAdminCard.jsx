@@ -1,20 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ConfirmBox from "../ConfirmBox";
 import SummaryApi from "../../comman/SummaryApi";
 import axios from "axios";
 import toast from "react-hot-toast";
-import EditProduct from './EditProduct'
-import { NavLink } from "react-router";
+import EditProduct from './EditProduct';
+import { NavLink } from "react-router-dom";
 
 const ProductAdminCard = ({ data, setEditData }) => {
   const [openEdit, setOpenEdit] = useState(false);
-  const [loading, setLoading] = useState(false); // Optional
+  const [loading, setLoading] = useState(false);
   const [confirmBox, setConfirmBox] = useState({
     open: false,
     data: null,
   });
-
-  
 
   const handleDelete = async () => {
     if (!confirmBox.data) return;
@@ -27,8 +25,7 @@ const ProductAdminCard = ({ data, setEditData }) => {
         { withCredentials: true }
       );
       toast.success("Product deleted successfully");
-
-      // You should notify parent to re-fetch data or filter out the deleted one.
+      // You should notify parent to re-fetch data
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Failed to delete product"
@@ -39,13 +36,8 @@ const ProductAdminCard = ({ data, setEditData }) => {
     }
   };
 
-  useEffect(()=>{
-    handleDelete()
-
-  },[data])
-
   return (
-    <div className="w-50 flex flex-col gap-1 bg-white p-2 rounded shadow">
+    <div className="w-50 flex flex-col gap-1 bg-white p-2 rounded shadow relative group">
       <img
         src={data.image[0]}
         alt={data.name}
@@ -71,26 +63,25 @@ const ProductAdminCard = ({ data, setEditData }) => {
         <p>{data.unit}</p>
       </div>
 
-      {/* Buttons */}
-      <div className="w-full flex my-3 items-center justify-between h-9">
-        <NavLink to={`/dashboard/product/view/${data._id}`} className="w-[47%]" >
+      {/* Buttons - Hidden by default, shown on hover */}
+      <div className="absolute bottom-0 left-0 right-0 h-0 overflow-hidden group-hover:h-[44px] transition-all duration-300  bg-white">
+        <div className="w-full flex items-center justify-between h-full px-2  pb-2">
+          <NavLink 
+            to={`/dashboard/product/view/${data._id}`} 
+            className="w-[47%]"
+          >
+            <button className="w-full border-2 border-green-600 py-1 rounded-lg cursor-pointer hover:bg-green-600 hover:text-white transition-colors">
+              View
+            </button>
+          </NavLink>
+          
           <button
-          // onClick={() => {
-          //   setOpenEdit(true);
-          //   setEditData && setEditData(data);
-          // }}
-          className="w-full border-2 border-green-600  py-1 rounded-lg cursor-pointer hover:bg-green-600 hover:text-white transition-colors"
-        >
-          View
-        </button>
-        </NavLink>
-        
-        <button
-          className="border-2 border-red-600 w-[47%] py-1 rounded-lg cursor-pointer hover:bg-red-600 hover:text-white transition-colors"
-          onClick={() => setConfirmBox({ open: true, data })}
-        >
-          Delete
-        </button>
+            className="border-2 border-red-600 w-[47%] py-1 rounded-lg cursor-pointer hover:bg-red-600 hover:text-white transition-colors"
+            onClick={() => setConfirmBox({ open: true, data })}
+          >
+            Delete
+          </button>
+        </div>
       </div>
 
       {/* Confirm Delete */}
@@ -101,7 +92,7 @@ const ProductAdminCard = ({ data, setEditData }) => {
         />
       )}
 
-      {openEdit && <EditProduct data={data} close ={() => setOpenEdit(false)} />}
+      {openEdit && <EditProduct data={data} close={() => setOpenEdit(false)} />}
     </div>
   );
 };
