@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import SummaryApi from "../comman/SummaryApi";
 import ProductCard1 from "./ProductCard";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import LoadingCard from "./LoadingCard";
 
 const CategoryWiseProductDisplay = ({ categoryData }) => {
   const [loading, setLoading] = useState(false);
@@ -80,18 +81,7 @@ const CategoryWiseProductDisplay = ({ categoryData }) => {
         {loading ? (
           <div className="flex gap-2 lg:gap-4  lg:pb-4">
             {[...Array(6)].map((_, index) => (
-              <div
-                key={`skeleton-${index}`}
-                className="w-56 flex-shrink-0 flex flex-col gap-3 animate-pulse p-2 rounded border border-gray-200"
-              >
-                <div className="bg-gray-200 w-full h-40 rounded-lg"></div>
-                <div className="bg-gray-200 w-3/4 h-5 rounded"></div>
-                <div className="bg-gray-200 w-1/3 h-4 rounded"></div>
-                <div className="flex justify-between gap-2 mt-2">
-                  <div className="bg-gray-200 w-full h-8 rounded-md"></div>
-                  <div className="bg-gray-200 w-full h-8 rounded-md"></div>
-                </div>
-              </div>
+              <LoadingCard key={index} />
             ))}
           </div>
         ) : (

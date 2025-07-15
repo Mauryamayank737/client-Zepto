@@ -8,6 +8,8 @@ import { useState } from 'react';
 import ProductCard1 from './ProductCard';
 import AllSubCategory from '../assets/images.png'
 import NoData from './admin/NoData';
+import { LoaderIcon } from 'react-hot-toast';
+import LoadingCard from './LoadingCard';
 
 const ProductPage = () => {
     const {categoryid ,categoryName} = useParams()
@@ -121,19 +123,21 @@ const ProductPage = () => {
 
             {/* Product section */}
             <div className='w-full flex flex-wrap gap-3'>
-                {loading ? (
-                    <div>Loading products...</div>
-                ) : error ? (
-                   <NoData />
-                ) : (
-                    products.map((data, index) => (
-                        <ProductCard1 
-                            key={data._id || index} // Added proper key
-                            data={data} 
-                        />
-                    ))
-                )}
-            </div>
+    {loading ? (
+        [...Array(5)].map((_, index) => (
+            <LoadingCard key={index} />
+        ))
+    ) : error ? (
+        <NoData />
+    ) : (
+        products.map((data, index) => (
+            <ProductCard1 
+                key={data._id || index} // Added proper key
+                data={data} 
+            />
+        ))
+    )}
+</div>
         </div>
     )
 }

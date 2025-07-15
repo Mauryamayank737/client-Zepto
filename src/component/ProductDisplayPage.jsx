@@ -5,6 +5,7 @@ import SummaryApi from "../comman/SummaryApi";
 import ProductCard1 from "./ProductCard";
 import noReturnIcon from "../assets/noReturn.svg";
 import FastDelivery from "../assets/fastDelivery.svg";
+import LoadingCard from "./LoadingCard";
 
 const ProductDisplayPage = () => {
   const { id, name, cat_id } = useParams();
@@ -194,6 +195,10 @@ const ProductDisplayPage = () => {
       </div>
 
       {/* Related/Other Products */}
+    
+
+
+      
       {otherRelatedProducts.length > 0 && (
         <div className="w-[90%] lg:w-[80%] m-auto mt-8">
           <h2 className="text-xl font-semibold mb-4 text-gray-800">
@@ -201,7 +206,11 @@ const ProductDisplayPage = () => {
           </h2>
           <div className="flex gap-3 justify-center lg:justify-start flex-wrap">
             {loading ? (
-              <p>Loading...</p>
+              <div className="flex gap-2 lg:gap-4  lg:pb-4">
+            {[...Array(6)].map((_, index) => (
+              <LoadingCard key={index} />
+            ))}
+          </div>
             ) : (
               otherRelatedProducts
                 .filter((p) => p._id !== id)
@@ -221,7 +230,11 @@ const ProductDisplayPage = () => {
           </h2>
           <div className="flex gap-3 justify-center lg:justify-start flex-wrap">
             {loading ? (
-              <p>Loading...</p>
+              <div className="flex gap-2 lg:gap-4  lg:pb-4">
+            {[...Array(6)].map((_, index) => (
+              <LoadingCard key={index} />
+            ))}
+          </div>
             ) : (
               otherProducts
                 .filter((p) => p._id !== id)
