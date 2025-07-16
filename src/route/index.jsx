@@ -19,6 +19,7 @@ import ViewProduct from "../component/admin/ViewProduct";
 import ProductPage from "../component/ProductPage";
 import NoData from "../component/admin/NoData";
 import ProductDisplayPage from "../component/ProductDisplayPage";
+import Cart from "../component/Cart";
 
 const route = createBrowserRouter([
   {
@@ -48,7 +49,10 @@ const route = createBrowserRouter([
       {
         path: "search",
         element: <SearchPage />,
-      },
+},{
+path:'cart',
+element:<Cart />
+},
       {
         path: "dashboard",
         element: <Dashboard />,

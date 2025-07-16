@@ -15,6 +15,8 @@ import { IoMdArrowDropup } from "react-icons/io";
 import UserProfile from "./UserProfile";
 import AdminProfile from "./admin/AdminProfile";
 import { DisplayPriceRupee } from "../utils/DisplayPriceRupee";
+import axios from "axios";
+import SummaryApi from "../comman/SummaryApi";
 
 function Nav() {
   const [location, setLocation] = useState(false);
@@ -23,6 +25,8 @@ function Nav() {
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalQty, setTotalQty] = useState(0);
+  const [cartSection, setCartSection] = useState(false);
+  // const [productQty ,setProductQty] = useState(1)
 
   const navigate = useNavigate();
   const user = useSelector((state) => state?.user);
@@ -93,10 +97,43 @@ function Nav() {
     setTotalQty(qty);
 
     const price = cartItem.reduce((preve, curr) => {
-      return preve +( curr.productId.currentPrice*curr.quantity);
+      return preve + curr.productId.currentPrice * curr.quantity;
     }, 0);
     setTotalPrice(price);
   }, [cartItem]);
+
+  const handleAddToCart = async (productId) => {
+    try {
+      const response = await axios({
+        url: SummaryApi.addcart.url,
+        method: SummaryApi.addcart.method,
+        data: {
+          productId,
+        },
+        withCredentials: true,
+
+      });
+      
+    } catch (error) {
+      
+    }
+  }
+   const handleDecrement = async (productId) => {
+    try {
+      const response = await axios({
+        url: SummaryApi.decrement.url,
+        method: SummaryApi.decrement.method,
+        data: {
+          productId
+        },
+        withCredentials: true,
+      });
+
+
+    } catch (error) {
+      
+    }
+  }
 
   return (
     <>
@@ -183,13 +220,13 @@ function Nav() {
           {/* Cart section */}
           <div
             className="justify-center items-center min-w-[150px] py-2 gap-2 cursor-pointer md:flex hidden bg-[#6f22fe] text-white rounded-md relative"
-            onClick={() => navigate("/")}
+            onClick={() => setCartSection(true)}
             aria-label="Shopping cart"
           >
             <TiShoppingCart size={30} className="animate-bounce" />
             <div className="flex">
               {cartItem[0] ? (
-                <div  className="flex flex-col justify-center items-center">
+                <div className="flex flex-col justify-center items-center">
                   <p>{totalQty} Products</p>
                   <p>{DisplayPriceRupee(totalPrice)}</p>
                 </div>
@@ -260,6 +297,82 @@ function Nav() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* cart section */}
+
+      {cartSection && (
+        <div className="fixed top-0 bottom-0 left-0 right-0 bg-[#000000c6] flex justify-end z-200 w-full h-full  ">
+          <div className="w-[600px] bg-white flex justify-start flex-col items-center gap-3 pt-20 overflow-y-scroll ">
+            {cartItem.map((data, index) => {
+              return (
+                <div className="py-3 my-2 shadow-2xl w-[90%] m-auto flex justify-start flex-col  border border-amber-200">
+                  <div className="w-[90%] m-auto flex flex-row items-center gap-2">
+                    {/* Image */}
+                    <img
+                      src={data?.productId?.image[0]}
+                      alt=""
+                      className="w-15 h-15 rounded"
+                    />
+                    {/* Name and unit */}
+                    <div className="h-full w-[35%] flex flex-col justify-center items-start gap-1">
+                      <p className="line-clamp-1 capitalize font-semibold">
+                        {data.productId?.name}
+                      </p>
+                      <p className="text-[14px] font-semibold">
+                        {data.productId?.unit}
+                      </p>
+                    </div>
+                    {/* Price ,Quantity and total price */}
+                    <div className="w-[32%]">
+                      {/* price*/}
+
+                      <p className="text-sm font-semibold">
+                        Price :{DisplayPriceRupee(data.productId?.currentPrice)}
+                      </p>
+
+                      {/* quantity */}
+                      <p className="text-sm font-semibold">
+                        Total Quantity :{data.quantity}{" "}
+                      </p>
+                      <p className="text-sm font-semibold">
+                        Total Price :
+                        {DisplayPriceRupee(
+                          data.productId?.currentPrice * data.quantity
+                        )}
+                      </p>
+                    </div>
+
+                    {/* Button */}
+                    <div>
+                      {/* inc and dec */}
+                      <div className="w-full flex items-center justify-center gap-1 h-8">
+                        <button
+                          className="w-full px-2 h-full flex items-center justify-center bg-purple-500 text-white hover:bg-purple-700 rounded disabled:opacity-50"
+                          onClick={handleDecrement(data.productId._id)}
+                        >
+                          -
+                        </button>
+                        <span className="w-full h-full px-2 flex items-center justify-center font-medium border border-purple-500 rounded-md">
+                          {data.quantity}
+                        </span>
+                        <button
+                          className="w-full px-2 h-full flex items-center justify-center bg-purple-500 text-white hover:bg-purple-700 rounded disabled:opacity-50"
+                          onClick={handleAddToCart(data.productId._id)}
+                          aria-label="Increase quantity"
+                        >
+                           +
+                        </button>
+                      </div>
+                      {/* deleteProduct */}
+                      <div></div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

@@ -1,4 +1,4 @@
-export const baseUrl = "http://localhost:3000";
+export const baseUrl = "https://server-zepto-l939.vercel.app/";
 
 const SummaryApi = {
   register: {
@@ -124,6 +124,10 @@ const SummaryApi = {
   },
   decrement:{
    url: `${baseUrl}/api/cart/decrement`,
+    method: "post",
+  },
+  deleteOneCart:{
+   url: `${baseUrl}/api/cart/deleteOne`,
     method: "post",
   }
 };

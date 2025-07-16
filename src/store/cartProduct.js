@@ -10,6 +10,12 @@ const cartSlice = createSlice({
     reducers:{
         handleAddItemCart :(state ,action)=>{
             state.cart=[...action.payload]
+        },
+        updateCart:(state ,action)=>{
+            state.cart=[...action.payload]
+        },
+        removeFromCart:(state ,action)=>{
+            state.cart=[...action.payload]
         }
     }
 })
