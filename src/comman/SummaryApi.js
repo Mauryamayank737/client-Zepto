@@ -1,4 +1,4 @@
-export const baseUrl = "https://server-zepto.vercel.app/";
+export const baseUrl = "https://server-two-brown.vercel.app";
 
 const SummaryApi = {
   register: {
