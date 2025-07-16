@@ -1,20 +1,28 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import SummaryApi from "../comman/SummaryApi";
 import ProductCard1 from "./ProductCard";
 import noReturnIcon from "../assets/noReturn.svg";
 import FastDelivery from "../assets/fastDelivery.svg";
 import LoadingCard from "./LoadingCard";
+import { toast } from "react-hot-toast";
+import { useGlobalContext } from "../provider/GlobalProvider";
 
 const ProductDisplayPage = () => {
-  const { id, name, cat_id } = useParams();
+const { id, name, cat_id } = useParams();
+  const navigate = useNavigate();
+  const { fetchCart } = useGlobalContext();
 
   const [productData, setProductData] = useState(null);
   const [currentImage, setCurrentImage] = useState(0);
   const [otherProducts, setOtherProducts] = useState([]);
   const [otherRelatedProducts, setOtherRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [quantity, setQuantity] = useState(0);
+  const [isAdded, setIsAdded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDecLoading, setIsDecLoading] = useState(false);
 
   const fetchRelatedProducts = async (cat_id) => {
     setLoading(true);
@@ -52,6 +60,18 @@ const ProductDisplayPage = () => {
         url: `${SummaryApi.view.url}/${id}`,
       });
       setProductData(response.data.data);
+      
+      // Check if product is already in cart
+      const cartResponse = await axios({
+        method: SummaryApi.checkCartItem.method,
+        url: `${SummaryApi.checkCartItem.url}/${response.data.data._id}`,
+        withCredentials: true
+      });
+      
+      if (cartResponse.data.success && cartResponse.data.data) {
+        setIsAdded(true);
+        setQuantity(cartResponse.data.data.quantity);
+      }
     } catch (error) {
       console.log(error.message || error);
     }
@@ -69,13 +89,102 @@ const ProductDisplayPage = () => {
     return Math.ceil(((originalPrice - currentPrice) / originalPrice) * 100);
   };
 
+  const handleAddToCart = async () => {
+    if (productData?.stock === 0 || isLoading) return;
+    
+    setIsLoading(true);
+    
+    try {
+      const response = await axios({
+        url: SummaryApi.addcart.url,
+        method: SummaryApi.addcart.method,
+        data: { 
+          productId: productData?._id,
+          quantity: quantity
+        },
+        withCredentials: true,
+      });
+
+      if (response.data.success) {
+        setIsAdded(true);
+        setQuantity(quantity+1)
+        toast.success(response.data.message || "Added to cart successfully");
+        fetchCart();
+      } else {
+        toast.error(response.data.message || "Failed to add to cart");
+      }
+    } catch (error) {
+      console.error("Add to cart error:", error);
+      toast.error(
+        error.response?.data?.message || error.message || "Failed to add to cart"
+      );
+      
+      if (error.response?.status === 401) {
+        navigate('/login');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // const handleA = async() => {
+  //   if (productData?.stock === 0) return;
+  //   setQuantity(prev => prev + 1);
+  //   if (!isAdded) {
+  //     await handleAddToCart();
+  //   }
+  // };
+
+  const handleDecrement = async () => {
+    if (productData?.stock === 0 || isDecLoading) return;
+    
+    setIsDecLoading(true);
+    
+    try {
+      const response = await axios({
+        url: SummaryApi.decrement.url,
+        method: SummaryApi.decrement.method,
+        data: { 
+          productId: productData?._id
+        },
+        withCredentials: true,
+      });
+
+      if (response.data.success) {
+        setQuantity(prev => Math.max(1, prev - 1));
+        if (quantity <= 1) {
+          setIsAdded(false);
+        }
+        toast.success(response.data.message || "Item quantity decreased");
+        fetchCart();
+      } else {
+        toast.error(response.data.message || "Failed to update cart");
+      }
+    } catch (error) {
+      console.error("Decrement cart error:", error);
+      toast.error(
+        error.response?.data?.message || error.message || "Failed to update cart"
+      );
+    } finally {
+      setIsDecLoading(false);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (productData?.stock === 0) return;
+    
+    if (!isAdded) {
+      // await handleAddToCart();
+    }
+    // navigate('/cart');
+  };
+
   if (!productData) return <div>Loading...</div>;
 
   const discount = calculateDiscount(
     productData.originalPrice,
     productData.currentPrice
   );
-
   return (
     <div className="p-4 capitalize">
       <div className="w-[90%] lg:w-[80%] m-auto h-full flex flex-col lg:flex-row justify-between relative">
@@ -172,37 +281,59 @@ const ProductDisplayPage = () => {
           </div>
 
           {/* Product buy and add button */}
-          <div>
-            {productData.stock == 0 ? (
-              <div className="flex justify-between gap-4 sticky bottom-0 bg-white p-4 shadow-md">
-                <button className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors capitalize">
-                  out of Stock
-                </button>
-                <button
-                  className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
-                  onClick={() => console.log("Add to Cart clicked")}
-                >
-                  Add to Cart
-                </button>
-              </div>
-            ) : (
-              <div className="flex justify-between gap-4 sticky bottom-0 bg-white p-4 shadow-md">
-                <button
-                  className="w-full py-3 bg-purple-500 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
-                  onClick={() => console.log("Buy Now clicked")}
-                >
-                  Buy Now
-                </button>
+            {/* <div className="p-4 capitalize"> */}
+      <div>
+        {productData.stock == 0 ? (
+          <div className="flex justify-between gap-4 sticky bottom-0 bg-white p-4 shadow-md">
+            <button className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors capitalize">
+              Out of Stock
+            </button>
+          </div>
+        ) : (
+          <div className="flex justify-between gap-4 sticky bottom-0 bg-white p-4 shadow-md">
+            <button
+              className="w-full py-3 bg-purple-500 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+              onClick={handleBuyNow}
+              disabled={isLoading}
+            >
+              Buy Now
+            </button>
 
+            {!isAdded ? (
+              <button
+                className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+                onClick={handleAddToCart}
+                disabled={isLoading}
+              >
+                {isLoading ? "Adding..." : "Add to Cart"}
+              </button>
+            ) : (
+              <div className="flex items-center justify-center gap-2 w-full bg-white rounded-lg">
                 <button
-                  className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
-                  onClick={() => console.log("Add to Cart clicked")}
+                  className="px-4 py-3 bg-green-600 text-white hover:bg-green-700 rounded-l-lg disabled:opacity-50"
+                  onClick={handleDecrement}
+                  disabled={isDecLoading}
                 >
-                  Add to Cart
+                  {isDecLoading ? "..." : "-"}
+                </button>
+                <span className="px-4 py-3 font-medium">
+                  {quantity}
+                </span>
+                <button
+                  className="px-4 py-3 bg-green-600 text-white hover:bg-green-700 rounded-r-lg disabled:opacity-50"
+                  onClick={handleAddToCart}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "..." : "+"}
                 </button>
               </div>
             )}
           </div>
+        )}
+      </div>
+
+      {/* ... (rest of the JSX remains the same) ... */}
+    {/* </div> */}
         </div>
       </div>
 

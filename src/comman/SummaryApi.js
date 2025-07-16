@@ -122,6 +122,10 @@ const SummaryApi = {
     url: `${baseUrl}/api/cart/add`,
     method: "post",
   },
+  decrement:{
+   url: `${baseUrl}/api/cart/decrement`,
+    method: "post",
+  }
 };
 
 export default SummaryApi;

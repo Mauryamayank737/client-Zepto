@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import logo from "../Images/logo.png";
 import { CiSearch } from "react-icons/ci";
 import { FaRegUserCircle } from "react-icons/fa";
@@ -14,39 +14,50 @@ import { MdOutlineArrowDropDown } from "react-icons/md";
 import { IoMdArrowDropup } from "react-icons/io";
 import UserProfile from "./UserProfile";
 import AdminProfile from "./admin/AdminProfile";
+import { DisplayPriceRupee } from "../utils/DisplayPriceRupee";
 
 function Nav() {
   const [location, setLocation] = useState(false);
   const [userProfile, setUserProfile] = useState(false);
   const [locationData, setLocationData] = useState(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
-  
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalQty, setTotalQty] = useState(0);
+
   const navigate = useNavigate();
   const user = useSelector((state) => state?.user);
-  
-  // API key should be in environment variables
-  const apiEndPoint = 'https://api.opencagedata.com/geocode/v1/json';
-  const apiKey =  'b5a4b8f5f9494d33bf2fb76e5906a6db';
+  const cartItem = useSelector((state) => state?.cartItem.cart);
 
-  const getUserCurrentLocation = useCallback(async (latitude, longitude) => {
-    try {
-      setLoadingLocation(true);
-      const query = `${latitude}%2C+${longitude}`;
-      const response = await fetch(`${apiEndPoint}?q=${query}&key=${apiKey}&pretty=1`);
-      const data = await response.json();
-      
-      if (data.results && data.results.length > 0) {
-        setLocationData(data.results[0]);
-        // You might want to store this in Redux or context for app-wide access
-        console.log("Location data:", data.results[0]);
+  console.log("cart Item ", cartItem);
+
+  // API key should be in environment variables
+  const apiEndPoint = "https://api.opencagedata.com/geocode/v1/json";
+  const apiKey = "b5a4b8f5f9494d33bf2fb76e5906a6db";
+
+  const getUserCurrentLocation = useCallback(
+    async (latitude, longitude) => {
+      try {
+        setLoadingLocation(true);
+        const query = `${latitude}%2C+${longitude}`;
+        const response = await fetch(
+          `${apiEndPoint}?q=${query}&key=${apiKey}&pretty=1`
+        );
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+          setLocationData(data.results[0]);
+          // You might want to store this in Redux or context for app-wide access
+          console.log("Location data:", data.results[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching location:", error);
+        // Consider adding user feedback here (e.g., toast notification)
+      } finally {
+        setLoadingLocation(false);
       }
-    } catch (error) {
-      console.error("Error fetching location:", error);
-      // Consider adding user feedback here (e.g., toast notification)
-    } finally {
-      setLoadingLocation(false);
-    }
-  }, [apiEndPoint, apiKey]);
+    },
+    [apiEndPoint, apiKey]
+  );
 
   const handleCurrentLocation = useCallback(() => {
     if (navigator.geolocation) {
@@ -67,7 +78,7 @@ function Nav() {
   }, [getUserCurrentLocation]);
 
   const toggleUserProfile = useCallback(() => {
-    setUserProfile(prev => !prev);
+    setUserProfile((prev) => !prev);
   }, []);
 
   const closeLocationModal = useCallback(() => {
@@ -75,16 +86,32 @@ function Nav() {
     setLocationData(null);
   }, []);
 
+  useEffect(() => {
+    const qty = cartItem.reduce((preve, curr) => {
+      return preve + curr.quantity;
+    }, 0);
+    setTotalQty(qty);
+
+    const price = cartItem.reduce((preve, curr) => {
+      return preve +( curr.productId.currentPrice*curr.quantity);
+    }, 0);
+    setTotalPrice(price);
+  }, [cartItem]);
+
   return (
     <>
       <div className="bg-gradient-to-b from-[#e2caf2f9] to-[#fff] w-full h-[120px] lg:h-[80px] pt-5 sticky top-0 z-20">
-        <div className="lg:w-[90%] w-[90%] h-[60px] flex items-center justify-between gap-[20px] m-auto">
+        <div className="lg:w-[90%] w-[90%] h-[60px] flex items-center justify-between gap-[15px] m-auto">
           <div className="w-[180px] h-full cursor-pointer flex justify-center items-center">
             <Link to="/">
-              <img src={logo} alt="Company Logo" className="w-[180px] h-[30px]" />
+              <img
+                src={logo}
+                alt="Company Logo"
+                className="w-[180px] h-[30px]"
+              />
             </Link>
           </div>
-          
+
           <div>
             <button className="w-full" aria-label="Super saver toggle">
               <div className="h-[44px] rounded-full border border-gray-200 py-1 px-[5px] w-[120px] md:flex hidden">
@@ -123,9 +150,16 @@ function Nav() {
           {/* User profile or login section */}
           {user._id ? (
             <div className="min-w-[40px] md:min-w-[100px] min-h-[40px] relative flex items-center justify-center cursor-pointer">
-              <div onClick={toggleUserProfile} className="flex items-center gap-1">
+              <div
+                onClick={toggleUserProfile}
+                className="flex items-center gap-1"
+              >
                 <h2 className="text-[16px] font-[400]">Account</h2>
-                {!userProfile ? <MdOutlineArrowDropDown size={22} /> : <IoMdArrowDropup size={22} />}
+                {!userProfile ? (
+                  <MdOutlineArrowDropDown size={22} />
+                ) : (
+                  <IoMdArrowDropup size={22} />
+                )}
               </div>
               {userProfile && (
                 <div className="absolute top-23 right-0 md:top-12 md:right-[-20px] bg-white w-[90vw] md:w-[300px] min-h-[200px] z-20 shadow-2xl rounded-lg flex justify-center items-center py-3">
@@ -147,15 +181,25 @@ function Nav() {
           )}
 
           {/* Cart section */}
-          <div 
-            className="justify-center items-center gap-2 cursor-pointer md:flex hidden w-[150px] bg-[#6f22fe] text-white p-2 rounded-md relative"
-            onClick={() => navigate('/cart')}
+          <div
+            className="justify-center items-center min-w-[150px] py-2 gap-2 cursor-pointer md:flex hidden bg-[#6f22fe] text-white rounded-md relative"
+            onClick={() => navigate("/")}
             aria-label="Shopping cart"
           >
             <TiShoppingCart size={30} className="animate-bounce" />
-            <p>Cart</p>
+            <div className="flex">
+              {cartItem[0] ? (
+                <div  className="flex flex-col justify-center items-center">
+                  <p>{totalQty} Products</p>
+                  <p>{DisplayPriceRupee(totalPrice)}</p>
+                </div>
+              ) : (
+                "My cart"
+              )}
+            </div>
           </div>
         </div>
+
         <div className="md:hidden w-[95%] h-[40px] m-auto">
           <SearchBox />
         </div>
@@ -184,7 +228,7 @@ function Nav() {
                 aria-label="Search location input"
               />
             </div>
-            
+
             {loadingLocation ? (
               <div className="flex justify-center items-center h-20">
                 <p>Loading location...</p>
@@ -206,12 +250,12 @@ function Nav() {
                   </p>
                 </div>
                 <div>
-                  <button 
+                  <button
                     className="border-2 border-gray-400 text-red-500 py-1 px-3 cursor-pointer rounded-md hover:bg-red-50 transition-colors"
                     onClick={handleCurrentLocation}
                     disabled={loadingLocation}
                   >
-                    {loadingLocation ? 'Detecting...' : 'Enable'}
+                    {loadingLocation ? "Detecting..." : "Enable"}
                   </button>
                 </div>
               </div>

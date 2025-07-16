@@ -10,6 +10,8 @@ import { setAllCategory, setAllSubCategory } from "./store/productSlice";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import SummaryApi from "./comman/SummaryApi";
+import { handleAddItemCart } from "./store/cartProduct";
+import GlobalProvider from "./provider/GlobalProvider";
 
 function App() {
   const dispatch = useDispatch();
@@ -55,9 +57,9 @@ function App() {
         method:SummaryApi.getCartList.method,
          withCredentials: true 
       })
-
-      console.log("cart" ,cart)
-    } catch (error) {
+      dispatch(handleAddItemCart(cart.data.data || cart.data))
+      console.log("cart" ,cart.data.data || cart.data)
+    } catch (error) { 
       
     }
   }
@@ -69,14 +71,14 @@ function App() {
     fetchSubCategory();
   }, []);
   return (
-    <>
+    <GlobalProvider>
       <Nav />
       <Outlet />
 
       <Card_work />
       <Footer />
       <Toaster position="top-right" />
-    </>
+    </GlobalProvider>
   );
 }
 
