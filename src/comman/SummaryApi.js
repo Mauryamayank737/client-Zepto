@@ -1,4 +1,3 @@
-
 export const baseUrl = "http://localhost:3000";
 
 const SummaryApi = {
@@ -75,7 +74,7 @@ const SummaryApi = {
     url: `${baseUrl}/api/subcategory/delete`,
     method: "post",
   },
-  addProduct:{
+  addProduct: {
     url: `${baseUrl}/api/product/create`,
     method: "post",
   },
@@ -83,36 +82,44 @@ const SummaryApi = {
   //   url: `${baseUrl}/api/product/get`,
   //   method: "get",
   // },
-  DeleteProduct :{
-     url: `${baseUrl}/api/product/delete`,
+  DeleteProduct: {
+    url: `${baseUrl}/api/product/delete`,
     method: "post",
   },
-  UpdateProduct :{
-     url: `${baseUrl}/api/product/update`,
+  UpdateProduct: {
+    url: `${baseUrl}/api/product/update`,
     method: "post",
   },
-  SearchProduct :{
-     url: `${baseUrl}/api/product/filtter`,
+  SearchProduct: {
+    url: `${baseUrl}/api/product/filtter`,
     method: "post",
   },
-  view :{
-     url: `${baseUrl}/api/product/view`,
+  view: {
+    url: `${baseUrl}/api/product/view`,
     method: "get",
   },
-  list :{
-     url: `${baseUrl}/api/product/list`,
+  list: {
+    url: `${baseUrl}/api/product/list`,
     method: "post",
   },
-  getProductByCategory :{
-     url: `${baseUrl}/api/product/productBycategory`,
+  getProductByCategory: {
+    url: `${baseUrl}/api/product/productBycategory`,
     method: "post",
   },
-  getSubcategoryByCategory :{
-    url :`${baseUrl}/api/subcategory/subCategoryByCategory`,
+  getSubcategoryByCategory: {
+    url: `${baseUrl}/api/subcategory/subCategoryByCategory`,
     method: "post",
   },
-  getProductBySubcategory :{
-     url: `${baseUrl}/api/product/productBySubcategory`,
+  getProductBySubcategory: {
+    url: `${baseUrl}/api/product/productBySubcategory`,
+    method: "post",
+  },
+  getCartList: {
+    url: `${baseUrl}/api/cart/list`,
+    method: "get",
+  },
+  addcart: {
+    url: `${baseUrl}/api/cart/add`,
     method: "post",
   },
 };

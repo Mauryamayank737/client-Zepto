@@ -48,7 +48,22 @@ function App() {
     } catch (error) {}
   };
 
+  const fetchCart = async (req,res) => {
+    try {
+      const cart = await axios ({
+        url:SummaryApi.getCartList.url,
+        method:SummaryApi.getCartList.method,
+         withCredentials: true 
+      })
+
+      console.log("cart" ,cart)
+    } catch (error) {
+      
+    }
+  }
+
   useEffect(() => {
+    fetchCart()
     fetchUser();
     fetchCategory();
     fetchSubCategory();

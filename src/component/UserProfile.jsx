@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import { BiLinkExternal } from "react-icons/bi";
+
 const UserProfile = () => {
   let navigate = useNavigate();
   const user = useSelector((state) => state.user);

@@ -1,25 +1,9 @@
-import React from "react";
-import PageBanner from "../component/PageBanner";
-import bannerimage from "../Images/app.png";
 import OfferCard from "../component/OfferCard";
 import img1 from "../Images/offerCard.webp";
 import img2 from "../Images/offerCard2.webp";
-import CategoriesBanner from "../component/CategoriesBanner";
-import SectionSlider from "../component/SectionSlider";
-import Sectionbannerimage1 from "../Images/categoriesBannerImg.webp";
-import Sectionbannerimage2 from "../Images/categoriesBannerImg2.webp";
-import CategoriesBannertype2 from "../component/CategoriesBannertype2";
-import CategoriesBanner2 from "../component/CategoriesBanner2";
-import CategoriesCard from "../component/CategoriesCard";
-import RecipeSection from "../component/RecipeSection";
-import Nav from "../component/Nav";
-import CategoriesBannerSlider from "../component/CategoriesBannerSlider";
 import Ctegories_slider from "../component/Ctegories_slider";
-import Categories from "../component/Categories";
-
 import BannerImage from "../assets/bannerImage.webp";
 import MobileBannerImage from "../assets/mobileBanner.webp";
-import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CategoryWiseProductDisplay from "../component/CategoryWiseProductDisplay";
 

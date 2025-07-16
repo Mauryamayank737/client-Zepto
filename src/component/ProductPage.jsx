@@ -1,14 +1,11 @@
 import axios from 'axios';
-import React from 'react'
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate, useNavigation, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import SummaryApi from '../comman/SummaryApi';
 import { useState } from 'react';
 import ProductCard1 from './ProductCard';
 import AllSubCategory from '../assets/images.png'
 import NoData from './admin/NoData';
-import { LoaderIcon } from 'react-hot-toast';
 import LoadingCard from './LoadingCard';
 
 const ProductPage = () => {
