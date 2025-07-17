@@ -219,7 +219,7 @@ function Nav() {
 
           {/* Cart section */}
           <div
-            className="justify-center items-center min-w-[150px] py-2 gap-2 cursor-pointer md:flex hidden bg-[#6f22fe] text-white rounded-md relative"
+            className="justify-center items-center min-w-[150px] py-2 gap-2 cursor-pointer  bg-[#6f22fe] text-white rounded-md relative"
             onClick={() => setCartSection(true)}
             aria-label="Shopping cart"
           >
