@@ -83,14 +83,14 @@ function CategoriesSlider() {
   return (
     <div className="w-[90%] h-full mx-auto ">
       <Slider {...settings}>
-        <div className="w-full flex justify-start items-start">
+        
 {allCategory.map((data) => (
           <div
             key={data._id}
-            className="flex justify-center items-start text-center w-[150px] h-fit cursor-pointer mx-5"
+            className="flex justify-start items-start text-center w-[150px] h-fit cursor-pointer mx-5"
           >
             <div 
-              className="flex flex-col justify-evenly items-center w-[130px] h-[180px] rounded-md hover:shadow-md transition-all"
+              className="flex flex-col justify-start py-2 items-center w-[130px] h-[180px] rounded-md hover:shadow-md transition-all"
               onClick={handleCategoryClick(data._id, data.name)}
             >
               <div className="bg-gray-200 p-2 rounded-lg">
@@ -106,7 +106,7 @@ function CategoriesSlider() {
             </div>
           </div>
         ))}
-        </div>
+      
         
       </Slider>
     </div>
