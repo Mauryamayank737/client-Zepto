@@ -81,9 +81,10 @@ function CategoriesSlider() {
   };
 
   return (
-    <div className="w-[90%] h-full mx-auto flex flex-col justify-start items-center">
+    <div className="w-[90%] h-full mx-auto ">
       <Slider {...settings}>
-        {allCategory.map((data) => (
+        <div className="w-full flex flex-col justify-start items-center">
+{allCategory.map((data) => (
           <div
             key={data._id}
             className="flex justify-center items-start text-center w-[150px] h-fit cursor-pointer mx-5"
@@ -105,6 +106,8 @@ function CategoriesSlider() {
             </div>
           </div>
         ))}
+        </div>
+        
       </Slider>
     </div>
   );
