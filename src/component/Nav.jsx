@@ -1,22 +1,22 @@
+// Nav.js (updated full code)
 import React, { useState, useCallback, useEffect } from "react";
 import logo from "../Images/logo.png";
-import { CiSearch } from "react-icons/ci";
+import { CiSearch, CiCircleRemove } from "react-icons/ci";
 import { FaRegUserCircle } from "react-icons/fa";
 import { RiArrowDropDownLine } from "react-icons/ri";
-import { CiCircleRemove } from "react-icons/ci";
-import { MdMyLocation } from "react-icons/md";
-import { Link } from "react-router-dom";
-import { TiShoppingCart } from "react-icons/ti";
-import { useNavigate } from "react-router";
-import SearchBox from "./SearchBox";
-import { useSelector } from "react-redux";
-import { MdOutlineArrowDropDown } from "react-icons/md";
+import { MdMyLocation, MdOutlineArrowDropDown } from "react-icons/md";
 import { IoMdArrowDropup } from "react-icons/io";
+import { TiShoppingCart } from "react-icons/ti";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import SearchBox from "./SearchBox";
 import UserProfile from "./UserProfile";
 import AdminProfile from "./admin/AdminProfile";
 import { DisplayPriceRupee } from "../utils/DisplayPriceRupee";
 import axios from "axios";
 import SummaryApi from "../comman/SummaryApi";
+import { useGlobalContext } from "../provider/GlobalProvider";
+import toast from "react-hot-toast";
 
 function Nav() {
   const [location, setLocation] = useState(false);
@@ -26,42 +26,30 @@ function Nav() {
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalQty, setTotalQty] = useState(0);
   const [cartSection, setCartSection] = useState(false);
-  // const [productQty ,setProductQty] = useState(1)
 
   const navigate = useNavigate();
   const user = useSelector((state) => state?.user);
   const cartItem = useSelector((state) => state?.cartItem.cart);
+  const { fetchCart } = useGlobalContext();
 
-  console.log("cart Item ", cartItem);
-
-  // API key should be in environment variables
   const apiEndPoint = "https://api.opencagedata.com/geocode/v1/json";
   const apiKey = "b5a4b8f5f9494d33bf2fb76e5906a6db";
 
-  const getUserCurrentLocation = useCallback(
-    async (latitude, longitude) => {
-      try {
-        setLoadingLocation(true);
-        const query = `${latitude}%2C+${longitude}`;
-        const response = await fetch(
-          `${apiEndPoint}?q=${query}&key=${apiKey}&pretty=1`
-        );
-        const data = await response.json();
-
-        if (data.results && data.results.length > 0) {
-          setLocationData(data.results[0]);
-          // You might want to store this in Redux or context for app-wide access
-          console.log("Location data:", data.results[0]);
-        }
-      } catch (error) {
-        console.error("Error fetching location:", error);
-        // Consider adding user feedback here (e.g., toast notification)
-      } finally {
-        setLoadingLocation(false);
+  const getUserCurrentLocation = useCallback(async (latitude, longitude) => {
+    try {
+      setLoadingLocation(true);
+      const query = `${latitude}%2C+${longitude}`;
+      const response = await fetch(`${apiEndPoint}?q=${query}&key=${apiKey}&pretty=1`);
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        setLocationData(data.results[0]);
       }
-    },
-    [apiEndPoint, apiKey]
-  );
+    } catch (error) {
+      console.error("Location error:", error);
+    } finally {
+      setLoadingLocation(false);
+    }
+  }, []);
 
   const handleCurrentLocation = useCallback(() => {
     if (navigator.geolocation) {
@@ -70,35 +58,20 @@ function Nav() {
           const { latitude, longitude } = position.coords;
           getUserCurrentLocation(latitude, longitude);
         },
-        (error) => {
-          console.error("Location Error:", error);
-          // Provide user feedback about location access failure
-        }
+        (error) => console.error("Location access error:", error)
       );
     } else {
-      console.log("Geolocation is not supported by this browser.");
-      // Provide user feedback about lack of geolocation support
+      console.log("Geolocation not supported.");
     }
   }, [getUserCurrentLocation]);
 
-  const toggleUserProfile = useCallback(() => {
-    setUserProfile((prev) => !prev);
-  }, []);
-
-  const closeLocationModal = useCallback(() => {
-    setLocation(false);
-    setLocationData(null);
-  }, []);
+  const toggleUserProfile = useCallback(() => setUserProfile((prev) => !prev), []);
+  const closeLocationModal = useCallback(() => { setLocation(false); setLocationData(null); }, []);
 
   useEffect(() => {
-    const qty = cartItem.reduce((preve, curr) => {
-      return preve + curr.quantity;
-    }, 0);
+    const qty = cartItem.reduce((pre, cur) => pre + cur.quantity, 0);
+    const price = cartItem.reduce((pre, cur) => pre + cur.productId.currentPrice * cur.quantity, 0);
     setTotalQty(qty);
-
-    const price = cartItem.reduce((preve, curr) => {
-      return preve + curr.productId.currentPrice * curr.quantity;
-    }, 0);
     setTotalPrice(price);
   }, [cartItem]);
 
@@ -107,32 +80,48 @@ function Nav() {
       const response = await axios({
         url: SummaryApi.addcart.url,
         method: SummaryApi.addcart.method,
-        data: {
-          productId,
-        },
+        data: { productId },
         withCredentials: true,
-
       });
-      
+      if (response.data.success) {
+        fetchCart();
+        toast.success(response.data.message || "Added to cart");
+      }
     } catch (error) {
-      
+      toast.error("Failed to add item");
     }
-  }
-   const handleDecrement = async (productId) => {
+  };
+
+  const handleDecrement = async (productId) => {
     try {
       const response = await axios({
         url: SummaryApi.decrement.url,
         method: SummaryApi.decrement.method,
-        data: {
-          productId
-        },
+        data: { productId },
         withCredentials: true,
       });
-
-
+      if (response.data.success) {
+        fetchCart();
+        toast.success(response.data.message || "Item removed");
+      }
     } catch (error) {
-      
+      toast.error("Failed to remove item");
     }
+  };
+
+  function calculateTax(amount, options = {}) {
+    const { rate = 18, type = "gst", inclusive = false, roundTo = 2 } = options;
+    const round = (value) => Number(value.toFixed(roundTo));
+    let tax, total;
+    if (inclusive) {
+      tax = round((amount * rate) / (100 + rate));
+      amount = round(amount - tax);
+    } else {
+      tax = round((amount * rate) / 100);
+      amount = round(amount);
+    }
+    total = round(amount + tax);
+    return { amount, tax, total, rate };
   }
 
   return (
@@ -200,7 +189,7 @@ function Nav() {
               </div>
               {userProfile && (
                 <div className="absolute top-23 right-0 md:top-12 md:right-[-20px] bg-white w-[90vw] md:w-[300px] min-h-[200px] z-20 shadow-2xl rounded-lg flex justify-center items-center py-3">
-                  {user.role === "ADMIN" ? <AdminProfile  /> : <UserProfile />}
+                  {user.role === "ADMIN" ? <AdminProfile /> : <UserProfile />}
                 </div>
               )}
             </div>
@@ -303,76 +292,40 @@ function Nav() {
 
       {/* cart section */}
 
-      {cartSection && (
-        <div className="fixed top-0 bottom-0 left-0 right-0 bg-[#000000c6] flex justify-end z-200 w-full h-full  ">
-          <div className="w-[600px] bg-white flex justify-start flex-col items-center gap-3 pt-20 overflow-y-scroll ">
-            {cartItem.map((data, index) => {
-              return (
-                <div className="py-3 my-2 shadow-2xl w-[90%] m-auto flex justify-start flex-col  border border-amber-200">
-                  <div className="w-[90%] m-auto flex flex-row items-center gap-2">
-                    {/* Image */}
-                    <img
-                      src={data?.productId?.image[0]}
-                      alt=""
-                      className="w-15 h-15 rounded"
-                    />
-                    {/* Name and unit */}
-                    <div className="h-full w-[35%] flex flex-col justify-center items-start gap-1">
-                      <p className="line-clamp-1 capitalize font-semibold">
-                        {data.productId?.name}
-                      </p>
-                      <p className="text-[14px] font-semibold">
-                        {data.productId?.unit}
-                      </p>
-                    </div>
-                    {/* Price ,Quantity and total price */}
-                    <div className="w-[32%]">
-                      {/* price*/}
-
-                      <p className="text-sm font-semibold">
-                        Price :{DisplayPriceRupee(data.productId?.currentPrice)}
-                      </p>
-
-                      {/* quantity */}
-                      <p className="text-sm font-semibold">
-                        Total Quantity :{data.quantity}{" "}
-                      </p>
-                      <p className="text-sm font-semibold">
-                        Total Price :
-                        {DisplayPriceRupee(
-                          data.productId?.currentPrice * data.quantity
-                        )}
-                      </p>
-                    </div>
-
-                    {/* Button */}
-                    <div>
-                      {/* inc and dec */}
-                      <div className="w-full flex items-center justify-center gap-1 h-8">
-                        <button
-                          className="w-full px-2 h-full flex items-center justify-center bg-purple-500 text-white hover:bg-purple-700 rounded disabled:opacity-50"
-                          onClick={handleDecrement(data.productId._id)}
-                        >
-                          -
-                        </button>
-                        <span className="w-full h-full px-2 flex items-center justify-center font-medium border border-purple-500 rounded-md">
-                          {data.quantity}
-                        </span>
-                        <button
-                          className="w-full px-2 h-full flex items-center justify-center bg-purple-500 text-white hover:bg-purple-700 rounded disabled:opacity-50"
-                          onClick={handleAddToCart(data.productId._id)}
-                          aria-label="Increase quantity"
-                        >
-                           +
-                        </button>
-                      </div>
-                      {/* deleteProduct */}
-                      <div></div>
-                    </div>
+       {cartSection && (
+        <div className="fixed inset-0 bg-[#000000c6] flex justify-end z-50">
+          <div className="w-[600px] bg-white flex flex-col gap-3  overflow-y-scroll">
+            <div className="w-[100%] m-auto flex justify-between sticky py-10 px-5 top-0 bg bg-white"
+>
+              <h1>Total Products: {cartItem.length}</h1>
+              <CiCircleRemove onClick={() => setCartSection(false)} size={22} className="cursor-pointer" />
+            </div>
+            {cartItem.map((data, index) => (
+              <div key={index} className="shadow p-4 border border-gray-200 rounded w-[90%] mx-auto">
+                <div className="flex items-center gap-4">
+                  <img src={data.productId.image[0]} alt="" className="w-16 h-16 rounded" />
+                  <div className="flex-1">
+                    <h2 className="font-semibold line-clamp-1">{data.productId.name}</h2>
+                    <p className="text-sm text-gray-500">{data.productId.unit}</p>
+                    <p className="text-sm font-semibold">Price: {DisplayPriceRupee(data.productId.currentPrice)}</p>
+                    <p className="text-sm font-semibold">Qty: {data.quantity}</p>
+                    <p className="text-sm font-semibold">Total: {DisplayPriceRupee(data.productId.currentPrice * data.quantity)}</p>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => handleDecrement(data.productId._id)} className="bg-purple-500 text-white px-2 py-1 rounded">-</button>
+                    <span className="px-2">{data.quantity}</span>
+                    <button onClick={() => handleAddToCart(data.productId._id)} className="bg-purple-500 text-white px-2 py-1 rounded">+</button>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
+            <div className="bg-gray-100 w-[90%] mx-auto p-4 rounded text-sm font-semibold">
+              <p>Total Items: {cartItem.length}</p>
+              <p>Total Quantity: {totalQty}</p>
+              <p>Total Price: {DisplayPriceRupee(totalPrice)}</p>
+              <p>Tax: {DisplayPriceRupee(calculateTax(totalPrice).tax)}</p>
+              <p>Grand Total: {DisplayPriceRupee(calculateTax(totalPrice).total)}</p>
+            </div>
           </div>
         </div>
       )}
