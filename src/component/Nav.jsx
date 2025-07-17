@@ -26,6 +26,7 @@ function Nav() {
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalQty, setTotalQty] = useState(0);
   const [cartSection, setCartSection] = useState(false);
+  const [displayProfile ,setDisplayProfile] = useState(true)
   // const [productQty ,setProductQty] = useState(1)
 
   const navigate = useNavigate();
@@ -188,19 +189,25 @@ function Nav() {
           {user._id ? (
             <div className="min-w-[40px] md:min-w-[100px] min-h-[40px] relative flex items-center justify-center cursor-pointer">
               <div
-                onClick={toggleUserProfile}
+                onClick={()=>{
+                  toggleUserProfile()
+                  setDisplayProfile(true)
+                }}
                 className="flex items-center gap-1"
               >
                 <h2 className="text-[16px] font-[400]">Account</h2>
                 {!userProfile ? (
                   <MdOutlineArrowDropDown size={22} />
                 ) : (
-                  <IoMdArrowDropup size={22} />
+                  <IoMdArrowDropup size={22} onClick={()=>setDisplayProfile(false)} />
                 )}
               </div>
               {userProfile && (
                 <div className="absolute top-23 right-0 md:top-12 md:right-[-20px] bg-white w-[90vw] md:w-[300px] min-h-[200px] z-20 shadow-2xl rounded-lg flex justify-center items-center py-3">
-                  {user.role === "ADMIN" ? <AdminProfile /> : <UserProfile />}
+                  {user.role === "ADMIN" 
+      ? <AdminProfile close={() => setProfileDisplay(false)} /> 
+      : <UserProfile close={() => setProfileDisplay(false)} />
+    }
                 </div>
               )}
             </div>

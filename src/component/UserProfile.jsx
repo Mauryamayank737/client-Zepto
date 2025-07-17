@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import { BiLinkExternal } from "react-icons/bi";
 
-const UserProfile = () => {
+const UserProfile = ({close}) => {
   let navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const handleLogout = async (e) => {
@@ -43,7 +43,7 @@ const UserProfile = () => {
             {user.name || user.mobile}
             
             <Link to={"/dashboard/profile"}>
-              <BiLinkExternal className="hover:text-amber-400" size={15} />
+              <BiLinkExternal className="hover:text-amber-400" size={15} onClick={close} />
             </Link>
           </div>
         </div>
@@ -52,12 +52,14 @@ const UserProfile = () => {
           <Link
             to={"/dashboard/myorder"}
             className="px-2 py-1  hover:bg-amber-100"
+            onClick={close}
           >
            My order
           </Link>
           <Link
             to={"/dashboard/address"}
             className="px-2 py-1 hover:bg-amber-100"
+            onClick={close}
           >
             Save Address
           </Link>
