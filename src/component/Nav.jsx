@@ -236,7 +236,7 @@ function Nav() {
             </div>
           </div>
 
-          <div className="md:hidden bg-purple-500 py-3 pl-2 pr-6 rounded relative overflow-hidden" onClick={()=>setCartSection(true)}>
+          <div className="md:hidden bg-purple-500 py-3 pl-2 gpr-6 rounded relative overflow-hidden" onClick={()=>setCartSection(true)}>
            <TiShoppingCart size={30} className="animate-bounce" />
            <p className="absolute top-[-3px] right-[5px] text-white font-semibold z-2">{totalQty}</p>
           </div>
