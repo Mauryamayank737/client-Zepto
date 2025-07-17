@@ -216,7 +216,7 @@ const { id, name, cat_id } = useParams();
         {/* Right: Product Details */}
         <div className="w-full lg:w-[48%] h-full flex flex-col gap-3">
           <div className=" border-[1px] p-3 border-gray-200 rounded-xl flex flex-col gap-4">
-            <h1 className="text-2xl font-bold ">{productData.name}</h1>
+            <h2 className="text-lg lg:text-2xl font-bold line-clamp-3 ">{productData.name}</h2>
             <p className="text-gray-700 text-sm lg:text-[16px] line-clamp-4">
               {productData.description}
             </p>

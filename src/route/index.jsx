@@ -20,6 +20,7 @@ import ProductPage from "../component/ProductPage";
 import NoData from "../component/admin/NoData";
 import ProductDisplayPage from "../component/ProductDisplayPage";
 import Cart from "../component/Cart";
+import SupperSaver from "../component/SupperSaver";
 
 const route = createBrowserRouter([
   {
@@ -49,10 +50,15 @@ const route = createBrowserRouter([
       {
         path: "search",
         element: <SearchPage />,
-},{
-path:'cart',
-element:<Cart />
-},
+      },
+      {
+        path: "cart",
+        element: <Cart />,
+      },
+      {
+        path: "supersaver",
+        element: <SupperSaver />,
+      },
       {
         path: "dashboard",
         element: <Dashboard />,
@@ -126,7 +132,7 @@ element:<Cart />
         element: <ProductDisplayPage />,
       },
     ],
-  }
+  },
 ]);
 
 export default route;

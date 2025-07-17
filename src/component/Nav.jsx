@@ -135,6 +135,7 @@ function Nav() {
     return { amount, tax, total, rate };
   }
 
+
   return (
     <>
       <div className="bg-gradient-to-b from-[#e2caf2f9] to-[#fff] w-full h-[120px] lg:h-[80px] pt-5 sticky top-0 z-20">
@@ -152,7 +153,7 @@ function Nav() {
           <div>
             <button className="w-full" aria-label="Super saver toggle">
               <div className="h-[44px] rounded-full border border-gray-200 py-1 px-[5px] w-[120px] md:flex hidden">
-                <div className="relative flex h-full w-full cursor-pointer items-center rounded-full p-0.5 transition-all bg-slate-300">
+                <div className="relative flex h-full w-full cursor-pointer items-center rounded-full p-0.5 transition-all bg-slate-300" onClick={()=>navigate('/supersaver')}>
                   <div className="h-8 w-8 rounded-full shadow-md transition-transform duration-[0.5s] ease-in-out translate-x-0 bg-white" />
                   <img
                     alt="super-saver"
@@ -333,6 +334,12 @@ function Nav() {
               <div
                 key={index}
                 className="shadow p-4 border border-gray-200 rounded w-[90%] mx-auto"
+                onClick={()=>{
+                  navigate(`/view/product/${encodeURIComponent(data?.productId._id)}/${encodeURIComponent(
+    data?.productId.name
+  )}/${encodeURIComponent(data?.productId.category[0])}`)
+
+setCartSection(false)}}
               >
                 <div className="flex items-center gap-4">
                   <img
@@ -362,14 +369,19 @@ function Nav() {
                   </div>
                   <div className="flex items-center gap-1">
                     <button
-                      onClick={() => handleDecrement(data.productId._id)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDecrement(data.productId._id)}}
                       className="bg-purple-500 text-white px-2 py-1 rounded"
                     >
                       -
                     </button>
                     <span className="px-2">{data.quantity}</span>
                     <button
-                      onClick={() => handleAddToCart(data.productId._id)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleAddToCart(data.productId._id)
+                      }}
                       className="bg-purple-500 text-white px-2 py-1 rounded"
                     >
                       +
