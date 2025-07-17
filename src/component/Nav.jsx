@@ -39,7 +39,9 @@ function Nav() {
     try {
       setLoadingLocation(true);
       const query = `${latitude}%2C+${longitude}`;
-      const response = await fetch(`${apiEndPoint}?q=${query}&key=${apiKey}&pretty=1`);
+      const response = await fetch(
+        `${apiEndPoint}?q=${query}&key=${apiKey}&pretty=1`
+      );
       const data = await response.json();
       if (data.results && data.results.length > 0) {
         setLocationData(data.results[0]);
@@ -65,12 +67,21 @@ function Nav() {
     }
   }, [getUserCurrentLocation]);
 
-  const toggleUserProfile = useCallback(() => setUserProfile((prev) => !prev), []);
-  const closeLocationModal = useCallback(() => { setLocation(false); setLocationData(null); }, []);
+  const toggleUserProfile = useCallback(
+    () => setUserProfile((prev) => !prev),
+    []
+  );
+  const closeLocationModal = useCallback(() => {
+    setLocation(false);
+    setLocationData(null);
+  }, []);
 
   useEffect(() => {
     const qty = cartItem.reduce((pre, cur) => pre + cur.quantity, 0);
-    const price = cartItem.reduce((pre, cur) => pre + cur.productId.currentPrice * cur.quantity, 0);
+    const price = cartItem.reduce(
+      (pre, cur) => pre + cur.productId.currentPrice * cur.quantity,
+      0
+    );
     setTotalQty(qty);
     setTotalPrice(price);
   }, [cartItem]);
@@ -292,29 +303,72 @@ function Nav() {
 
       {/* cart section */}
 
-       {cartSection && (
-        <div className="fixed inset-0 bg-[#000000c6] flex justify-end z-50">
-          <div className="w-[600px] bg-white flex flex-col gap-3  overflow-y-scroll">
-            <div className="w-[100%] m-auto flex justify-between sticky py-10 px-5 top-0 bg bg-white"
->
+      {cartSection && (
+        <div
+          className={`fixed inset-0 z-50 flex justify-end bg-[#000000c6] transition-opacity duration-300 ${
+            cartSection
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          }`}
+        >
+          <div
+            className={`w-[600px] h-full bg-white transform transition-transform duration-500 ease-in-out overflow-y-auto ${
+              cartSection ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            <div className="w-[90%] m-auto flex justify-between sticky py-10 top-0 bg bg-white">
               <h1>Total Products: {cartItem.length}</h1>
-              <CiCircleRemove onClick={() => setCartSection(false)} size={22} className="cursor-pointer" />
+              <CiCircleRemove
+                onClick={() => setCartSection(false)}
+                size={22}
+                className="cursor-pointer"
+              />
             </div>
             {cartItem.map((data, index) => (
-              <div key={index} className="shadow p-4 border border-gray-200 rounded w-[90%] mx-auto">
+              <div
+                key={index}
+                className="shadow p-4 border border-gray-200 rounded w-[90%] mx-auto"
+              >
                 <div className="flex items-center gap-4">
-                  <img src={data.productId.image[0]} alt="" className="w-16 h-16 rounded" />
+                  <img
+                    src={data.productId.image[0]}
+                    alt=""
+                    className="w-16 h-16 rounded"
+                  />
                   <div className="flex-1">
-                    <h2 className="font-semibold line-clamp-1">{data.productId.name}</h2>
-                    <p className="text-sm text-gray-500">{data.productId.unit}</p>
-                    <p className="text-sm font-semibold">Price: {DisplayPriceRupee(data.productId.currentPrice)}</p>
-                    <p className="text-sm font-semibold">Qty: {data.quantity}</p>
-                    <p className="text-sm font-semibold">Total: {DisplayPriceRupee(data.productId.currentPrice * data.quantity)}</p>
+                    <h2 className="font-semibold line-clamp-1">
+                      {data.productId.name}
+                    </h2>
+                    <p className="text-sm text-gray-500">
+                      {data.productId.unit}
+                    </p>
+                    <p className="text-sm font-semibold">
+                      Price: {DisplayPriceRupee(data.productId.currentPrice)}
+                    </p>
+                    <p className="text-sm font-semibold">
+                      Qty: {data.quantity}
+                    </p>
+                    <p className="text-sm font-semibold">
+                      Total:{" "}
+                      {DisplayPriceRupee(
+                        data.productId.currentPrice * data.quantity
+                      )}
+                    </p>
                   </div>
                   <div className="flex items-center gap-1">
-                    <button onClick={() => handleDecrement(data.productId._id)} className="bg-purple-500 text-white px-2 py-1 rounded">-</button>
+                    <button
+                      onClick={() => handleDecrement(data.productId._id)}
+                      className="bg-purple-500 text-white px-2 py-1 rounded"
+                    >
+                      -
+                    </button>
                     <span className="px-2">{data.quantity}</span>
-                    <button onClick={() => handleAddToCart(data.productId._id)} className="bg-purple-500 text-white px-2 py-1 rounded">+</button>
+                    <button
+                      onClick={() => handleAddToCart(data.productId._id)}
+                      className="bg-purple-500 text-white px-2 py-1 rounded"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
               </div>
@@ -324,7 +378,9 @@ function Nav() {
               <p>Total Quantity: {totalQty}</p>
               <p>Total Price: {DisplayPriceRupee(totalPrice)}</p>
               <p>Tax: {DisplayPriceRupee(calculateTax(totalPrice).tax)}</p>
-              <p>Grand Total: {DisplayPriceRupee(calculateTax(totalPrice).total)}</p>
+              <p>
+                Grand Total: {DisplayPriceRupee(calculateTax(totalPrice).total)}
+              </p>
             </div>
           </div>
         </div>
