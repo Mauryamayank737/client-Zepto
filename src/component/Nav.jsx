@@ -199,7 +199,7 @@ function Nav() {
                 )}
               </div>
               {userProfile && (
-                <div className="absolute top-23 right-0 md:top-12 md:right-[-20px] bg-white w-[90vw] md:w-[300px] min-h-[200px] z-20 shadow-2xl rounded-lg flex justify-center items-center py-3">
+                <div className="absolute top-23 right-[-40px] md:top-13 md:right-[-20px] bg-white w-[90vw] md:w-[300px] min-h-[200px] z-20 shadow-2xl rounded-lg flex justify-center items-center py-3">
                   {user.role === "ADMIN" ? <AdminProfile /> : <UserProfile />}
                 </div>
               )}
@@ -236,9 +236,9 @@ function Nav() {
             </div>
           </div>
 
-          <div className="md:hidden bg-purple-500 py-3 pl-2 gpr-6 rounded relative overflow-hidden" onClick={()=>setCartSection(true)}>
+          <div className="md:hidden bg-purple-500 py-3 pl-2 pr-4 rounded relative overflow-hidden" onClick={()=>setCartSection(true)}>
            <TiShoppingCart size={30} className="animate-bounce" />
-           <p className="absolute top-[-3px] right-[5px] text-white font-semibold z-2">{totalQty}</p>
+           <p className="absolute top-[-3px] right-[5px] text-black font-semibold z-2">{totalQty}</p>
           </div>
         </div>
 
