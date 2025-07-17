@@ -143,7 +143,7 @@ const Sub_category = () => {
   }, []);
 
   return (
-    <div className="p-4">
+    <div className="md:p-4">
       <section className="mb-6">
         <div className="p-4 shadow-md rounded-lg mb-4 flex justify-between items-center">
           <h1 className="text-xl font-semibold">Sub Categories</h1>
@@ -156,7 +156,7 @@ const Sub_category = () => {
         </div>
       </section>
 
-      <div className="bg-white rounded-lg shadow-md p-4 overflow-auto">
+      <div className="bg-white rounded-lg shadow-md md:p-4 overflow-auto">
         {loading ? (
           <div className="text-center py-8">Loading...</div>
         ) : (

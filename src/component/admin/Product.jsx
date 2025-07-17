@@ -107,7 +107,7 @@ const Product = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="md:p-4">
       <section className="mb-6">
         <div className="p-4 shadow-md rounded-lg mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <h1 className="text-xl font-semibold">Product</h1>
@@ -194,7 +194,7 @@ const Product = () => {
 
       {(loading || searchLoading) && <Loading />}
 
-      <div className="flex justify-center items-start gap-3 lg:gap-5 flex-wrap bg-gray-200 p-5 rounded">
+      <div className="flex justify-center items-start gap-2 lg:gap-5 flex-wrap bg-gray-200 py-3 md:p-5 rounded">
         {!loading && !searchLoading && Array.isArray(productData) && productData.length > 0 ? (
           productData.map((data, index) => (
             <ProductAdminCard data={data} key={data._id || index} />

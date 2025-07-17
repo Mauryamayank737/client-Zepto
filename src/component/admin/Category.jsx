@@ -67,7 +67,7 @@ const Category = () => {
 
       {!categoryData[0] && !loading && <NoData />}
 
-      <div className="w-full flex flex-wrap gap-1 lg:gap-6 justify-center bg-red-100">
+      <div className="w-full flex flex-wrap gap-1 lg:gap-6 justify-center">
         {categoryData.map((data, index) => (
           <div key={data._id || index} className="w-[150px]">
             <div className="w-full min-h-[200px] overflow-hidden flex flex-col justify-start items-center gap-3 bg-gray-200 shadow-md py-2 rounded-lg group">
