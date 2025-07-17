@@ -340,11 +340,11 @@ const { id, name, cat_id } = useParams();
       {/* Related/Other Products */}
 
       {otherRelatedProducts.length > 0 && (
-        <div className="w-[90%] lg:w-[80%] m-auto mt-8">
+        <div className="w-full lg:w-[80%] m-auto mt-8">
           <h2 className="text-xl font-semibold mb-4 text-gray-800">
             More Products in This Category
           </h2>
-          <div className="flex gap-3 justify-center lg:justify-start flex-wrap">
+          <div className="w-full flex gap-3 justify-center lg:justify-start flex-wrap">
             {loading ? (
               <div className="flex gap-2 lg:gap-4  lg:pb-4">
                 {[...Array(6)].map((_, index) => (
@@ -364,7 +364,7 @@ const { id, name, cat_id } = useParams();
 
       {/* Other Products */}
       {otherProducts.length > 0 && (
-        <div className="w-[90%] lg:w-[80%] m-auto mt-8">
+        <div className="w-full lg:w-[80%] m-auto mt-8">
           <h2 className="text-xl font-semibold mb-4 text-gray-800">
             Other Products You Might Like
           </h2>
