@@ -6,7 +6,7 @@ import SummaryApi from '../../comman/SummaryApi'
 import { BiLinkExternal } from 'react-icons/bi'
 import toast from 'react-hot-toast'
 
-const AdminProfile = ({close}) => {
+const AdminProfile = () => {
     let navigate = useNavigate()
    const user = useSelector((state)=>state.user)
   const handleLogout = async()=>{
@@ -38,19 +38,19 @@ const AdminProfile = ({close}) => {
    <div className="font-semibold">My Admin</div>
    <div className="capitalize text-sm flex items-center gap-2 max-w-[200px] text-ellipsis line-clamp-1">{user.name ||user.mobile} <span className='text-red-600 font-semibold'>(Admin)</span>
     <Link to={'/dashboard/profile'}>
-    <BiLinkExternal className="hover:text-amber-400" size={15} onClick={close}/>
+    <BiLinkExternal className="hover:text-amber-400" size={15}/>
     </Link>
    </div>
    </div>
 
       <div className="grid text-sm  gap-1" >
   
-      <Link to={"/dashboard/category"} className="px-2 py-1  hover:bg-amber-100" onClick={close} >Category</Link>
-      <Link to={"/dashboard/subcategory"} className="px-2 py-1 hover:bg-amber-100" onClick={close} >Sub Category</Link>
-      <Link to={"/dashboard/product"} className="px-2 py-1  hover:bg-amber-100" onClick={close} >Product</Link>
-      <Link to={"/dashboard/uploadproduct"} className="px-2 py-1 hover:bg-amber-100" onClick={close} >Upload Product</Link>
-        <Link to={"/dashboard/myorder"} className="px-2 py-1  hover:bg-amber-100" onClick={close} >My Orders</Link>
-        <Link to={"/dashboard/address"} className="px-2 py-1 hover:bg-amber-100" onClick={close} >Save Address</Link>
+      <Link to={"/dashboard/category"} className="px-2 py-1  hover:bg-amber-100" >Category</Link>
+      <Link to={"/dashboard/subcategory"} className="px-2 py-1 hover:bg-amber-100" >Sub Category</Link>
+      <Link to={"/dashboard/product"} className="px-2 py-1  hover:bg-amber-100" >Product</Link>
+      <Link to={"/dashboard/uploadproduct"} className="px-2 py-1 hover:bg-amber-100" >Upload Product</Link>
+        <Link to={"/dashboard/myorder"} className="px-2 py-1  hover:bg-amber-100" >My Orders</Link>
+        <Link to={"/dashboard/address"} className="px-2 py-1 hover:bg-amber-100" >Save Address</Link>
         <button onClick={handleLogout} className="text-left px-2 py-1  hover:bg-red-100 cursor-pointer">Logout</button>
       </div>
     </div>
