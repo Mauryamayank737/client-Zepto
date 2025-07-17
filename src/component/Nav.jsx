@@ -219,7 +219,7 @@ function Nav() {
 
           {/* Cart section */}
           <div
-            className="justify-center items-center min-w-[150px] py-2 gap-2 cursor-pointer  bg-[#6f22fe] text-white rounded-md relative"
+            className="justify-center items-center min-w-[150px] py-2 gap-2 cursor-pointer md:flex hidden bg-[#6f22fe] text-white rounded-md relative"
             onClick={() => setCartSection(true)}
             aria-label="Shopping cart"
           >
@@ -234,6 +234,11 @@ function Nav() {
                 "My cart"
               )}
             </div>
+          </div>
+
+          <div className="md:hidden bg-purple-500 py-3 pl-2 pr-6 rounded relative overflow-hidden" onClick={()=>setCartSection(true)}>
+           <TiShoppingCart size={30} className="animate-bounce" />
+           <p className="absolute top-[-3px] right-[5px] text-white font-semibold z-2">{totalQty}</p>
           </div>
         </div>
 
