@@ -17,7 +17,7 @@ const Dashboard = () => {
   
 </div>
 {/* User content */}
-<div className='md:border-l-1 border-neutral-300 w-full p-4'>
+<div className='md:border-l-1 border-neutral-300 w-full lg:p-4'>
  <Outlet />
 </div>
     </div>

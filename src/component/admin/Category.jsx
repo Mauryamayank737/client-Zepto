@@ -54,7 +54,7 @@ const Category = () => {
   }, [allCategory]);
 
   return (
-    <section className="my-[30px] lg:my-[0px]">
+    <section className="w-full my-[30px] lg:my-[0px]">
       <div className="p-2 shadow-xl rounded-md mb-4 flex justify-between items-center">
         <h1 className="text-xl font-semibold">Category</h1>
         <button
@@ -67,7 +67,7 @@ const Category = () => {
 
       {!categoryData[0] && !loading && <NoData />}
 
-      <div className="flex flex-wrap gap-3 lg:gap-6 justify-center">
+      <div className="w-full flex flex-wrap gap-1 lg:gap-6 justify-center bg-red-100">
         {categoryData.map((data, index) => (
           <div key={data._id || index} className="w-[150px]">
             <div className="w-full min-h-[200px] overflow-hidden flex flex-col justify-start items-center gap-3 bg-gray-200 shadow-md py-2 rounded-lg group">
