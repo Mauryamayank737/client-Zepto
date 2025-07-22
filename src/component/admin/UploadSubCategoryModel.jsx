@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import SummaryApi from "../../comman/SummaryApi";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 function UploadSubCategoryModel({ close }) {
   const [subCategoryData, setSubCateoryData] = useState({
@@ -14,6 +15,7 @@ function UploadSubCategoryModel({ close }) {
   });
   const [isUploading, setIsUploading] = useState(false);
   const allCategory = useSelector((state) => state.product.allCategory);
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,12 +36,12 @@ function UploadSubCategoryModel({ close }) {
     setIsUploading(true);
     try {
       const response = await UploadImage(file);
-      const imageUrl = response?.data?.url || response?.data?.data?.url;
+      // const imageUrl = response?.data?.url || response?.data?.data?.url;
       
-      if (imageUrl) {
+      if (response) {
         setSubCateoryData((preve) => ({
           ...preve,
-          image: imageUrl,
+          image: response,
         }));
       }
     } catch (error) {

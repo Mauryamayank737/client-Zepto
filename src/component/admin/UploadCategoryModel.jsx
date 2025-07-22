@@ -5,6 +5,7 @@ import UploadImage from "../../utils/UploadImage";
 import axios from "axios";
 import SummaryApi from "../../comman/SummaryApi";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const UploadCategoryModel = ({ close,fetchData }) => {
   const [data, setData] = useState({
@@ -13,6 +14,7 @@ const UploadCategoryModel = ({ close,fetchData }) => {
   });
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(false);
+  const navigate = useNavigate()
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -28,8 +30,8 @@ const UploadCategoryModel = ({ close,fetchData }) => {
     const response = await axios [SummaryApi.addCategory.method](SummaryApi.addCategory.url ,{name :data.name ,image:data.image},{ withCredentials: true } )
     // console.log(response)
     toast.success("Category created ")
+    navigate(0)
     close()
-    // Submit logic here
   };
 
   const handleUploadCategory = async (e) => {
@@ -45,12 +47,11 @@ const UploadCategoryModel = ({ close,fetchData }) => {
         setUploadProgress(Math.round((progress.loaded / progress.total) * 100));
       });
 
-      const imageUrl = response.data?.url || response.data?.data?.url;
       
-      if (imageUrl) {
+      if (response) {
         setData((prev) => ({
           ...prev,
-          image: imageUrl,
+          image: response,
         }));
       } else {
         console.error("Image URL not found in response");

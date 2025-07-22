@@ -8,9 +8,9 @@ const UploadImage =async(image) =>{
     formData.append("image" , image)
     const resopnse =await axios[SummaryApi.uploadImage.method](SummaryApi.uploadImage.url ,formData , { withCredentials: true })
 
-    // console.log(resopnse)
+    // console.log(resopnse.data.imageUrl)
 
-    return resopnse
+    return resopnse?.data?.imageUrl
     
   } catch (error) {
     return error

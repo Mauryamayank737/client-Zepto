@@ -60,11 +60,10 @@ const UploadProduct = () => {
     }
     try {
       const response = await UploadImage(file);
-      const { data: ImageResponse } = response;
-      const imageUrl = ImageResponse.data.url;
+    
       setData((preve) => ({
         ...preve,
-        images: [...preve.images, imageUrl],
+        images: [...preve.images, response],
       }));
     } catch (error) {
       console.error("Error uploading image:", error);
