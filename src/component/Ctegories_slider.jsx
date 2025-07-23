@@ -75,7 +75,7 @@ function CategoriesSlider() {
         navigate(`/${encodeURIComponent(categoryId)}/${encodeURIComponent(categoryName)}/All`);
       } else {
         // Fallback if no subcategory exists
-        navigate(`/${encodeURIComponent(categoryId)}`);
+        // navigate(`/${encodeURIComponent(categoryId)}`);
       }
     };
   };

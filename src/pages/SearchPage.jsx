@@ -5,19 +5,24 @@ import { useEffect } from "react";
 import axios from "axios";
 import SummaryApi from "../comman/SummaryApi";
 import ProductCard1 from "../component/ProductCard";
+import LoadingCard from '../component/LoadingCard'
 function SearchPage() {
   const [productData, setProductData] = useState([]);
   const [search ,setSearch] = useState("")
+  const [loading ,setLoading] = useState(false)
 
   const fetchProduct = async () => {
     try {
+      setLoading(true)
       const response = await axios({
         method: SummaryApi.list.method,
         url: SummaryApi.list.url, 
         data: {}, 
       });
       setProductData(response.data.data)
-    } catch (error) {}
+    } catch (error) {}finally{
+      setLoading(false)
+    }
   };
   useEffect(() => {
     fetchProduct();
@@ -47,6 +52,13 @@ function SearchPage() {
           <ProductCard1 data={data } key={index} />
         )
       })}
+      {loading && 
+      (
+       [...Array(10)].map((_, index) => (
+                  <LoadingCard key={index} />
+                ))
+      )
+      }
      </div>
     </>
   );
